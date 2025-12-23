@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install dependencies
+      - name: Install MLflow and dependencies
         run: |
           pip install --upgrade pip
           pip install mlflow==2.18.0 numpy pandas scikit-learn scipy matplotlib
@@ -26,7 +26,7 @@ jobs:
       - name: Run MLflow Project (Training)
         run: |
           cd MLProject
-          mlflow run .
+          mlflow run . --no-conda
 
       - name: Docker Login
         run: |
