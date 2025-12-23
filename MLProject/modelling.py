@@ -45,49 +45,47 @@ grid = GridSearchCV(
     n_jobs=-1
 )
 
-with mlflow.start_run():
+grid.fit(X_train, y_train)
+best_model = grid.best_estimator_
 
-    grid.fit(X_train, y_train)
-    best_model = grid.best_estimator_
+y_pred = best_model.predict(X_test)
 
-    y_pred = best_model.predict(X_test)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+r2 = r2_score(y_test, y_pred)
 
-    rmse = mean_squared_error(y_test, y_pred, squared=False)
-    r2 = r2_score(y_test, y_pred)
+# METRICS
+mlflow.log_metric("rmse", rmse)
+mlflow.log_metric("r2", r2)
+mlflow.log_metric("train_size", len(X_train))
+mlflow.log_metric("test_size", len(X_test))
 
-    # METRICS
-    mlflow.log_metric("rmse", rmse)
-    mlflow.log_metric("r2", r2)
-    mlflow.log_metric("train_size", len(X_train))
-    mlflow.log_metric("test_size", len(X_test))
+# PARAMS
+mlflow.log_params(grid.best_params_)
 
-    # PARAMS
-    mlflow.log_params(grid.best_params_)
+# MODEL
+mlflow.sklearn.log_model(best_model, "model")
 
-    # MODEL
-    mlflow.sklearn.log_model(best_model, "model")
+# FEATURE IMPORTANCE
+plt.figure(figsize=(8, 5))
+pd.Series(
+    best_model.feature_importances_,
+    index=X.columns
+).sort_values(ascending=False).head(10).plot(kind="bar")
+plt.tight_layout()
+plt.savefig("feature_importance.png")
+plt.close()
 
-    # FEATURE IMPORTANCE
-    plt.figure(figsize=(8, 5))
-    pd.Series(
-        best_model.feature_importances_,
-        index=X.columns
-    ).sort_values(ascending=False).head(10).plot(kind="bar")
-    plt.tight_layout()
-    plt.savefig("feature_importance.png")
-    plt.close()
+mlflow.log_artifact("feature_importance.png")
 
-    mlflow.log_artifact("feature_importance.png")
+# METADATA
+metadata = {
+    "model": "RandomForestRegressor",
+    "dataset": "EAFC26",
+    "target": "OVR",
+    "best_params": grid.best_params_
+}
 
-    # METADATA
-    metadata = {
-        "model": "RandomForestRegressor",
-        "dataset": "EAFC26",
-        "target": "OVR",
-        "best_params": grid.best_params_
-    }
+with open("model_metadata.json", "w") as f:
+    json.dump(metadata, f, indent=4)
 
-    with open("model_metadata.json", "w") as f:
-        json.dump(metadata, f, indent=4)
-
-    mlflow.log_artifact("model_metadata.json")
+mlflow.log_artifact("model_metadata.json")
