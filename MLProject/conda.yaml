@@ -1,5 +1,5 @@
 name: mlflow-env
-channels:
+channels: 
   - conda-forge
 dependencies:
   - python=3.9
@@ -11,3 +11,4 @@ dependencies:
       - scikit-learn
       - scipy
       - matplotlib
+
