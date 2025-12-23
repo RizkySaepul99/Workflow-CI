@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 mlflow.set_experiment("CI_EAFC26_Tuned")
 
-df = pd.read_csv("EAFC26_preprocessing.csv")
+df = pd.read_csv("MLProject/EAFC26_preprocessing.csv")
 
 X = df.drop(columns=["OVR"])
 y = df["OVR"]
