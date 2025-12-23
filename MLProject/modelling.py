@@ -13,7 +13,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 dagshub.init(
     repo_owner="RizkySaepul99",
     repo_name="EAFC26-MLflow-Experiment",
-    mlflow=True
+    mlflow=True,
+    token=os.getenv("DAGSHUB_TOKEN")
 )
 
 mlflow.set_experiment("EAFC26_OVR_Advanced")
