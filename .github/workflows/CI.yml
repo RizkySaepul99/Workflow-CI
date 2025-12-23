@@ -34,7 +34,7 @@ jobs:
            DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
         run: |
           cd MLProject
-          mlflow run . --env-manager=local --experiment-name "EAFC26_OVR_Advanced"
+          mlflow run . --env-manager=local
 
       - name: Docker Login
         run: |
