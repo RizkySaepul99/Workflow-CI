@@ -4,7 +4,6 @@ import mlflow.sklearn
 import dagshub
 import matplotlib.pyplot as plt
 import json
-import os
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
@@ -14,9 +13,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 dagshub.init(
     repo_owner="RizkySaepul99",
     repo_name="EAFC26-MLflow-Experiment",
-    mlflow=True,
-    token=os.getenv("DAGSHUB_TOKEN")
+    mlflow=True
 )
+
 
 mlflow.set_experiment("EAFC26_OVR_Advanced")
 
