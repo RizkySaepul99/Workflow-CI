@@ -1,6 +1,7 @@
 import pandas as pd
 import mlflow
 import mlflow.sklearn
+import dagshub
 import matplotlib.pyplot as plt
 import json
 
@@ -8,16 +9,24 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+# DAGSHUB INITIALIZATION
+dagshub.init(
+    repo_owner="RizkySaepul99",
+    repo_name="EAFC26-MLflow-Experiment",
+    mlflow=True
+)
+
 mlflow.set_experiment("EAFC26_OVR_Advanced")
 
+# LOAD DATA (PATH SUDAH BENAR UNTUK CI)
 df = pd.read_csv("EAFC26_preprocessing.csv")
 
 X = df.drop(columns=["OVR"])
 y = df["OVR"]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42)
+    X, y, test_size=0.2, random_state=42
+)
 
 # HYPERPARAMETER TUNING
 param_grid = {
@@ -49,12 +58,14 @@ with mlflow.start_run():
     # METRICS
     mlflow.log_metric("rmse", rmse)
     mlflow.log_metric("r2", r2)
+    mlflow.log_metric("train_size", len(X_train))
+    mlflow.log_metric("test_size", len(X_test))
 
     # PARAMS
     mlflow.log_params(grid.best_params_)
 
     # MODEL
-    mlflow.sklearn.log_model(best_model, artifact_path="model")
+    mlflow.sklearn.log_model(best_model, "model")
 
     # FEATURE IMPORTANCE
     plt.figure(figsize=(8, 5))
@@ -62,7 +73,6 @@ with mlflow.start_run():
         best_model.feature_importances_,
         index=X.columns
     ).sort_values(ascending=False).head(10).plot(kind="bar")
-    plt.title("Top 10 Feature Importance")
     plt.tight_layout()
     plt.savefig("feature_importance.png")
     plt.close()
@@ -74,9 +84,7 @@ with mlflow.start_run():
         "model": "RandomForestRegressor",
         "dataset": "EAFC26",
         "target": "OVR",
-        "best_params": grid.best_params_,
-        "train_size": len(X_train),
-        "test_size": len(X_test)
+        "best_params": grid.best_params_
     }
 
     with open("model_metadata.json", "w") as f:
