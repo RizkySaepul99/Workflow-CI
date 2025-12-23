@@ -8,8 +8,8 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-mlflow.set_tracking_uri("file:./mlruns")
-mlflow.set_experiment("CI_EAFC26_Tuning")
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_experiment("EAFC26_OVR_Advanced")
 
 df = pd.read_csv("EAFC26_preprocessing.csv")
 
