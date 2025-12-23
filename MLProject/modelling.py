@@ -8,9 +8,10 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-mlflow.set_experiment("CI_EAFC26_Tunning")
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("CI_EAFC26_Tuning")
 
-df = pd.read_csv("MLProject/EAFC26_preprocessing.csv")
+df = pd.read_csv("EAFC26_preprocessing.csv")
 
 X = df.drop(columns=["OVR"])
 y = df["OVR"]
@@ -46,14 +47,17 @@ with mlflow.start_run():
     rmse = mean_squared_error(y_test, y_pred, squared=False)
     r2 = r2_score(y_test, y_pred)
 
-    # MANUAL LOGGING
+    # METRICS
     mlflow.log_metric("rmse", rmse)
     mlflow.log_metric("r2", r2)
+
+    # PARAMS
     mlflow.log_params(grid.best_params_)
 
-    mlflow.sklearn.log_model(best_model, "model")
+    # MODEL
+    mlflow.sklearn.log_model(best_model, artifact_path="model")
 
-    #FEATURE IMPORTANCE
+    # FEATURE IMPORTANCE
     plt.figure(figsize=(8, 5))
     pd.Series(
         best_model.feature_importances_,
@@ -71,7 +75,9 @@ with mlflow.start_run():
         "model": "RandomForestRegressor",
         "dataset": "EAFC26",
         "target": "OVR",
-        "best_params": grid.best_params_
+        "best_params": grid.best_params_,
+        "train_size": len(X_train),
+        "test_size": len(X_test)
     }
 
     with open("model_metadata.json", "w") as f:
