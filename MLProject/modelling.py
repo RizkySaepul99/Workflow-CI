@@ -66,7 +66,7 @@ with mlflow.start_run():
 
     mlflow.log_artifact("feature_importance.png")
 
-    #METADATA
+    # METADATA
     metadata = {
         "model": "RandomForestRegressor",
         "dataset": "EAFC26",
