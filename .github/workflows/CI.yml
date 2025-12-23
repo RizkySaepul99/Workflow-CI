@@ -28,8 +28,10 @@ jobs:
             numpy \
             matplotlib \
             dagshub
-
+      
       - name: Run MLflow Project (Training)
+        env:
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
         run: |
           cd MLProject
           mlflow run . --env-manager=local --experiment-name "EAFC26_OVR_Advanced"
