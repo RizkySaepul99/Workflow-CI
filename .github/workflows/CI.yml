@@ -21,7 +21,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install mlflow==2.18.0 numpy pandas scikit-learn>=1.0.0 scipy matplotlib
           pip install \
             mlflow==2.19.0 \
             scikit-learn \
