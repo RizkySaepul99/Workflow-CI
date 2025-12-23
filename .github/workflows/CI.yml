@@ -32,7 +32,7 @@ jobs:
       - name: Run MLflow Project (Training)
         run: |
           cd MLProject
-          mlflow run .
+          mlflow run . --no-conda
 
       - name: Docker Login
         run: |
