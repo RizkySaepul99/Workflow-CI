@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -25,3 +25,10 @@ jobs:
         run: |
           cd MLProject
           mlflow run .
+
+      - name: Build Docker Image
+        run: |
+          cd MLProject
+          mlflow models build-docker \
+            -m runs:/latest/model \
+            -n eafc26-model
