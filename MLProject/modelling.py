@@ -4,6 +4,7 @@ import mlflow.sklearn
 import dagshub
 import matplotlib.pyplot as plt
 import json
+import os
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
