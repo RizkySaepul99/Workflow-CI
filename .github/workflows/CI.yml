@@ -16,12 +16,21 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12.7'
 
-      - name: Install MLflow and dependencies
+      - name: Upgrade pip
         run: |
-          pip install --upgrade pip
-          pip install mlflow==2.18.0 numpy pandas scikit-learn scipy matplotlib
+          python -m pip install --upgrade pip
+
+      - name: Install dependencies
+        run: |
+          pip install \
+            mlflow==2.19.0 \
+            scikit-learn \
+            pandas \
+            numpy \
+            matplotlib \
+            dagshub
 
       - name: Run MLflow Project (Training)
         run: |
