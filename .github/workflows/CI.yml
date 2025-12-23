@@ -33,7 +33,7 @@ jobs:
       - name: Run MLflow Project (Training)
         run: |
           cd MLProject
-          mlflow run . --env-manager=local --experiment-name "CI_EAFC26_Tuning"
+          mlflow run . --env-manager=local --experiment-name "EAFC26_OVR_Advanced"
 
       - name: Docker Login
         run: |
