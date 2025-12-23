@@ -1,0 +1,27 @@
+name: MLflow CI Training
+
+on:
+  push:
+    paths:
+      - MLProject/**
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install MLflow
+        run: pip install mlflow
+
+      - name: Run MLflow Project
+        run: |
+          cd MLProject
+          mlflow run .
