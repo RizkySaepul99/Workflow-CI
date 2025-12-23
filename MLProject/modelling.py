@@ -45,47 +45,47 @@ grid = GridSearchCV(
     n_jobs=-1
 )
 
-grid.fit(X_train, y_train)
-best_model = grid.best_estimator_
+with mlflow.start_run():
 
-y_pred = best_model.predict(X_test)
+    grid.fit(X_train, y_train)
+    best_model = grid.best_estimator_
 
-rmse = mean_squared_error(y_test, y_pred) ** 0.5
-r2 = r2_score(y_test, y_pred)
+    y_pred = best_model.predict(X_test)
 
-# METRICS
-mlflow.log_metric("rmse", rmse)
-mlflow.log_metric("r2", r2)
-mlflow.log_metric("train_size", len(X_train))
-mlflow.log_metric("test_size", len(X_test))
+    rmse = mean_squared_error(y_test, y_pred, squared=False)
+    r2 = r2_score(y_test, y_pred)
 
-# PARAMS
-mlflow.log_params(grid.best_params_)
+    # METRICS
+    mlflow.log_metric("rmse", rmse)
+    mlflow.log_metric("r2", r2)
+    mlflow.log_metric("train_size", len(X_train))
+    mlflow.log_metric("test_size", len(X_test))
 
-# MODEL
-mlflow.sklearn.log_model(best_model, "model")
+    # PARAMS
+    mlflow.log_params(grid.best_params_)
 
-# FEATURE IMPORTANCE
-plt.figure(figsize=(8, 5))
-pd.Series(
-    best_model.feature_importances_,
-    index=X.columns
-).sort_values(ascending=False).head(10).plot(kind="bar")
-plt.tight_layout()
-plt.savefig("feature_importance.png")
-plt.close()
+    # MODEL
+    mlflow.sklearn.log_model(best_model, "model")
 
-mlflow.log_artifact("feature_importance.png")
+    # FEATURE IMPORTANCE
+    plt.figure(figsize=(8, 5))
+    pd.Series(
+        best_model.feature_importances_,
+        index=X.columns
+    ).sort_values(ascending=False).head(10).plot(kind="bar")
+    plt.tight_layout()
+    plt.savefig("feature_importance.png")
+    plt.close()
 
-# METADATA
-metadata = {
-    "model": "RandomForestRegressor",
-    "dataset": "EAFC26",
-    "target": "OVR",
-    "best_params": grid.best_params_
-}
+    mlflow.log_artifact("feature_importance.png")
 
-with open("model_metadata.json", "w") as f:
-    json.dump(metadata, f, indent=4)
-
-mlflow.log_artifact("model_metadata.json")
+    # METADATA
+    metadata = {
+        "model": "RandomForestRegressor",
+        "dataset": "EAFC26",
+        "target": "OVR",
+        "best_params": grid.best_params_
+    }
+    with open("model_metadata.json", "w") as f:
+        json.dump(metadata, f, indent=4)
+    mlflow.log_artifact("model_metadata.json")
