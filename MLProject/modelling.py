@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-mlflow.set_experiment("CI_EAFC26_Tuned")
+mlflow.set_experiment("CI_EAFC26_Tunning")
 
 df = pd.read_csv("MLProject/EAFC26_preprocessing.csv")
 
