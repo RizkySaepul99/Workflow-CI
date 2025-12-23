@@ -11,5 +11,3 @@ dependencies:
       - scikit-learn
       - scipy
       - matplotlib
-
-
