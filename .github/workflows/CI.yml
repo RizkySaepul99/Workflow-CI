@@ -13,20 +13,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          auto-update-conda: true
-          python-version: 3.9
+          python-version: '3.9'
 
-      - name: Install MLflow
+      - name: Install dependencies
         run: |
-          pip install mlflow
+          pip install --upgrade pip
+          pip install mlflow==2.18.0 numpy pandas scikit-learn scipy matplotlib
 
       - name: Run MLflow Project (Training)
         run: |
           cd MLProject
-          mlflow run .
+          mlflow run . --no-conda
 
       - name: Docker Login
         run: |
