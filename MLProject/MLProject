@@ -1,4 +1,4 @@
-name: eafc26-training
+name: eafc26-training 
 
 conda_env: conda.yaml
 
