@@ -8,9 +8,6 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-# SET EXPERIMENT (AMAN)
-mlflow.set_experiment("EAFC26_OVR_Advanced")
-
 # LOAD DATA
 df = pd.read_csv("EAFC26_preprocessing.csv")
 
@@ -38,13 +35,12 @@ grid = GridSearchCV(
     n_jobs=-1
 )
 
-# === TRAINING ===
 grid.fit(X_train, y_train)
 best_model = grid.best_estimator_
 
 y_pred = best_model.predict(X_test)
 
-rmse = mean_squared_error(y_test, y_pred) ** 0.5
+rmse = mean_squared_error(y_test, y_pred, squared=False)
 r2 = r2_score(y_test, y_pred)
 
 # METRICS
@@ -59,7 +55,7 @@ mlflow.log_params(grid.best_params_)
 # MODEL
 mlflow.sklearn.log_model(best_model, "model")
 
-# FEATURE IMPORTANCE
+# ARTIFACTS
 plt.figure(figsize=(8, 5))
 pd.Series(
     best_model.feature_importances_,
@@ -71,14 +67,12 @@ plt.close()
 
 mlflow.log_artifact("feature_importance.png")
 
-# METADATA
 metadata = {
     "model": "RandomForestRegressor",
     "dataset": "EAFC26",
     "target": "OVR",
     "best_params": grid.best_params_
 }
-
 with open("model_metadata.json", "w") as f:
     json.dump(metadata, f, indent=4)
 
