@@ -40,7 +40,7 @@ best_model = grid.best_estimator_
 
 y_pred = best_model.predict(X_test)
 
-rmse = mean_squared_error(y_test, y_pred, squared=False)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
 
 # METRICS
