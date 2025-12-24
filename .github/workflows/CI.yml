@@ -32,6 +32,14 @@ jobs:
         run: |
           cd MLProject
           mlflow run . --env-manager=local
+          echo "TRAINING DONE"
+
+      - name: Get latest RUN_ID
+        run: |
+          cd MLProject
+          RUN_ID=$(ls -td mlruns/*/* | head -n 1 | awk -F'/' '{print $(NF)}')
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          echo "Detected RUN_ID=$RUN_ID"
 
       - name: Docker Login
         run: |
