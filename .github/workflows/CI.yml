@@ -42,7 +42,7 @@ jobs:
         run: |
           cd MLProject
           mlflow models build-docker \
-            -m runs:/latest/model \
+            -m runs:/$MLFLOW_RUN_ID/model \
             -n rizkye99/eafc26-model
 
       - name: Push Docker Image to Docker Hub
