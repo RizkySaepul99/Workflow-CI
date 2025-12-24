@@ -1,0 +1,1 @@
+https://hub.docker.com/repository/docker/rizkye99/eafc26-model/general
