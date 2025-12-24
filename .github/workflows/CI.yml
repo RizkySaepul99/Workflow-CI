@@ -31,7 +31,7 @@ jobs:
       - name: Run MLflow Project (Training)
         run: |
           cd MLProject
-          mlflow run .
+          mlflow run . --env-manager=local
 
       - name: Docker Login
         run: |
@@ -41,9 +41,15 @@ jobs:
       - name: Build Docker Image with MLflow
         run: |
           cd MLProject
+      
+          RUN_ID=$(mlflow runs list --experiment-name EAFC26_OVR_Advanced --max-results 1 | tail -n 1 | awk '{print $1}')
+      
+          echo "Using RUN_ID=$RUN_ID"
+      
           mlflow models build-docker \
-            -m runs:/$MLFLOW_RUN_ID/model \
+            -m runs:/$RUN_ID/model \
             -n rizkye99/eafc26-model
+
 
       - name: Push Docker Image to Docker Hub
         run: |
