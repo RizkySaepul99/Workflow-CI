@@ -42,12 +42,10 @@ jobs:
         run: |
           cd MLProject
       
-          RUN_ID=$(mlflow runs list --experiment-name EAFC26_OVR_Advanced --max-results 1 | tail -n 1 | awk '{print $1}')
-      
-          echo "Using RUN_ID=$RUN_ID"
+          echo "MLFLOW_RUN_ID=$MLFLOW_RUN_ID"
       
           mlflow models build-docker \
-            -m runs:/$RUN_ID/model \
+            -m runs:/$MLFLOW_RUN_ID/model \
             -n rizkye99/eafc26-model
 
 
