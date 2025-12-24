@@ -9,6 +9,8 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
+mlflow.set_experiment("EAFC26_OVR_Advanced")
+
 # LOAD DATA
 df = pd.read_csv("EAFC26_preprocessing.csv")
 
@@ -35,35 +37,37 @@ grid = GridSearchCV(
     n_jobs=-1
 )
 
-grid.fit(X_train, y_train)
-best_model = grid.best_estimator_
+with mlflow.start_run() as run:
 
-y_pred = best_model.predict(X_test)
-
-rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-r2 = r2_score(y_test, y_pred)
-
-# LOG METRICS
-mlflow.log_metric("rmse", rmse)
-mlflow.log_metric("r2", r2)
-
-# LOG PARAMS
-mlflow.log_params(grid.best_params_)
-
-# LOG MODEL
-mlflow.sklearn.log_model(best_model, "model")
-
-# ARTIFACT
-plt.figure(figsize=(8, 5))
-pd.Series(best_model.feature_importances_, index=X.columns)\
-  .sort_values(ascending=False).head(10).plot(kind="bar")
-plt.tight_layout()
-plt.savefig("feature_importance.png")
-plt.close()
-
-mlflow.log_artifact("feature_importance.png")
-
-with open("model_metadata.json", "w") as f:
-    json.dump(grid.best_params_, f, indent=2)
-
-mlflow.log_artifact("model_metadata.json")
+    grid.fit(X_train, y_train)
+    best_model = grid.best_estimator_
+    
+    y_pred = best_model.predict(X_test)
+    
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+    
+    # LOG METRICS
+    mlflow.log_metric("rmse", rmse)
+    mlflow.log_metric("r2", r2)
+    
+    # LOG PARAMS
+    mlflow.log_params(grid.best_params_)
+    
+    # LOG MODEL
+    mlflow.sklearn.log_model(best_model, "model")
+    
+    # ARTIFACT
+    plt.figure(figsize=(8, 5))
+    pd.Series(best_model.feature_importances_, index=X.columns)\
+      .sort_values(ascending=False).head(10).plot(kind="bar")
+    plt.tight_layout()
+    plt.savefig("feature_importance.png")
+    plt.close()
+    
+    mlflow.log_artifact("feature_importance.png")
+    
+    with open("model_metadata.json", "w") as f:
+        json.dump(grid.best_params_, f, indent=2)
+    
+    mlflow.log_artifact("model_metadata.json")
