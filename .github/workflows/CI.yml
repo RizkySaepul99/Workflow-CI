@@ -31,14 +31,11 @@ jobs:
       - name: Run MLflow Project (Training)
         run: |
           cd MLProject
-          # Simpan output untuk mendapatkan run_id
           mlflow run . --env-manager=local 2>&1 | tee mlflow_output.log
           echo "TRAINING DONE"
           
-          # Ekstrak run_id dari output
           RUN_ID=$(grep -oP "Run ID: \K[a-f0-9]+" mlflow_output.log | tail -1)
           if [ -z "$RUN_ID" ]; then
-            # Alternatif: ambil dari direktori terbaru
             RUN_ID=$(ls -td mlruns/*/* | head -n 1 | awk -F'/' '{print $(NF)}')
           fi
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
@@ -63,7 +60,6 @@ jobs:
           
           echo "Using MLFLOW_RUN_ID=$MLFLOW_RUN_ID"
           
-          # Pastikan run_id valid
           if [ -z "$MLFLOW_RUN_ID" ]; then
             echo "ERROR: MLFLOW_RUN_ID is empty!"
             exit 1
